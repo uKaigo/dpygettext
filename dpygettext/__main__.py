@@ -14,6 +14,7 @@ from . import __version__ as version
 from .eater import TokenEater
 
 DEFAULT_KEYWORDS = ['_']
+COMMENTS_KEYWORDS = ['NOTE', 'TRANSLATORS']  # TODO: Make it customizable.
 
 
 def _parse_args(args):
@@ -120,6 +121,7 @@ def _parse_args(args):
 def main(args=None):
     options = _parse_args(args)
     options.keywords.extend(DEFAULT_KEYWORDS)
+    options.c_keywords = COMMENTS_KEYWORDS
 
     all_infiles = []
     for path in options.infiles:

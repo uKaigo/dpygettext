@@ -28,6 +28,7 @@ class TokenEater:
         self.__cur_outfile = None
         self.__enclosure_count = 0
         self.__pot_files = {}
+        self.__comment = ()  # (string, lineno)
 
     def __call__(self, ttype, tstring, start, end, line):
         self.__state(ttype, tstring, start[0])
@@ -64,6 +65,11 @@ class TokenEater:
         if ttype == tokenize.NAME and tstring in opts.keywords:
             self.__state = self.__keyword_seen
             return
+
+        if ttype == tokenize.COMMENT:
+            comment = tstring[1:].strip().split(' ')
+            if comment[0].rstrip(':') in opts.c_keywords:
+                self.__comment = (' '.join(comment[1:]), lineno)
 
         if ttype == tokenize.STRING:
             maybe_fstring = ast.parse(tstring, mode='eval').body
@@ -205,6 +211,14 @@ class TokenEater:
 
         occurrence = (str(self.__cur_infile), lineno)
 
+        t_comment = None
+        if self.__comment:
+            print(self.__comment)
+            if self.__comment[1] != lineno - 1:
+                self.__comment = ()
+            else:
+                t_comment = self.__comment[0]
+
         flags = []
         if is_docstring:
             flags.append('docstring')
@@ -220,6 +234,7 @@ class TokenEater:
             self.__cur_potfile.append(
                 polib.POEntry(
                     msgid=msg,
+                    tcomment=t_comment,
                     occurrences=occurrences,
                     flags=flags,
                 )
