@@ -213,7 +213,6 @@ class TokenEater:
 
         t_comment = None
         if self.__comment:
-            print(self.__comment)
             if self.__comment[1] != lineno - 1:
                 self.__comment = ()
             else:
