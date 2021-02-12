@@ -4,7 +4,6 @@
 # Copyright(c) 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
 # 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021
 # Python Software Foundation; All Rights Reserved
-
 from __future__ import print_function
 import sys
 import ast
@@ -12,6 +11,7 @@ import tokenize
 import polib
 import time
 import re
+from inspect import cleandoc
 
 from . import __version__ as version
 from .utils import is_literal_string, safe_eval
@@ -153,7 +153,7 @@ class TokenEater:
     def __suite_docstring(self, ttype, tstring, lineno):
         # Ignore any intervening noise
         if ttype == tokenize.STRING and is_literal_string(tstring):
-            self.__add_entry(safe_eval(tstring), lineno, is_docstring=1)
+            self.__add_entry(cleandoc(safe_eval(tstring)), lineno, is_docstring=True)
             self.__state = self.__waiting
         elif ttype not in (tokenize.NEWLINE, tokenize.INDENT,
                            tokenize.COMMENT):
@@ -259,7 +259,8 @@ class TokenEater:
             outfile.parent.mkdir(parents=True, exist_ok=True)
             if not self.__options.no_location:
                 potfile.sort(key=lambda e: e.occurrences[0])
-
+            if self.__options.omit_empty and not potfile:
+                continue
             if outfile.name == '-':
                 print(getattr(potfile, '__unicode__')())
             else:

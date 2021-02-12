@@ -48,6 +48,11 @@ def _parse_args(args):
              'to "locales".'
     )
     parser.add_argument(
+        '--omit-empty',
+        action='store_true',
+        help='Empty .pot will not be outputed.'
+    )
+    parser.add_argument(
         '-k',
         '--keywords',
         action='extend',
