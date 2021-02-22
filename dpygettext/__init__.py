@@ -6,4 +6,4 @@
 # Python Software Foundation; All Rights Reserved
 
 __author__ = "uKaigo"
-__version__ = "0.1.0"
+__version__ = "0.2.0a"

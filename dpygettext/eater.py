@@ -49,10 +49,13 @@ class TokenEater:
                 elif ttype not in (tokenize.ENCODING, tokenize.COMMENT, tokenize.NL):
                     self.__fresh_module = False
                 return
-            # Class or func/method docstring?
-            if ttype == tokenize.NAME and tstring in ('class', 'def'):
-                self.__state = self.__suite_seen
-                return
+
+        # Class or func/method docstring?
+        # We're running this outside of the if to stop
+        # false positives in function names.
+        if ttype == tokenize.NAME and tstring in ('class', 'def'):
+            self.__state = self.__suite_seen
+            return
 
         if opts.cmd_docstrings:
             if ttype == tokenize.OP and tstring == '@':
@@ -100,7 +103,7 @@ class TokenEater:
                             'lineno': lineno
                         }, file=sys.stderr)
                         continue
-                    if call.keywords:
+                    if call.keywords and not opts.multiple_args:
                         print((
                             '*** %(file)s:%(lineno)s: Seen unexpected keyword arguments'
                             ' in gettext call: %(source_segment)s'
@@ -150,7 +153,10 @@ class TokenEater:
         if ttype == tokenize.OP:
             if tstring == ':' and self.__enclosure_count == 0:
                 # We see a colon and we're not in an enclosure: end of def/class
-                self.__state = self.__suite_docstring
+                if self.__options.docstrings:
+                    self.__state = self.__suite_docstring
+                else:
+                    self.__state = self.__waiting
             elif tstring in '([{':
                 self.__enclosure_count += 1
             elif tstring in ')]}':
