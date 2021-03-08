@@ -8,10 +8,11 @@ from __future__ import print_function
 import sys
 import ast
 import tokenize
-import polib
 import time
 import re
 from inspect import cleandoc
+
+import polib
 
 from . import __version__ as version
 from .utils import is_literal_string, safe_eval
@@ -50,12 +51,10 @@ class TokenEater:
                     self.__fresh_module = False
                 return
 
-        # Class or func/method docstring?
-        # We're running this outside of the if to stop
-        # false positives in function names.
-        if ttype == tokenize.NAME and tstring in ('class', 'def'):
-            self.__state = self.__suite_seen
-            return
+            # Class or func/method docstring?
+            if ttype == tokenize.NAME and tstring in ('class', 'def'):
+                self.__state = self.__suite_seen
+                return
 
         if opts.cmd_docstrings:
             if ttype == tokenize.OP and tstring == '@':
@@ -153,10 +152,7 @@ class TokenEater:
         if ttype == tokenize.OP:
             if tstring == ':' and self.__enclosure_count == 0:
                 # We see a colon and we're not in an enclosure: end of def/class
-                if self.__options.docstrings:
-                    self.__state = self.__suite_docstring
-                else:
-                    self.__state = self.__waiting
+                self.__state = self.__suite_docstring
             elif tstring in '([{':
                 self.__enclosure_count += 1
             elif tstring in ')]}':

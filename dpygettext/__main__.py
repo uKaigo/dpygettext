@@ -106,7 +106,7 @@ def _parse_args(args):
         action='store_true',
         help='Allow multiple arguments. For example '
              'KEYWORD("translate {name}", name="this"). '
-             "This is useful if you're using you're own gettext function."
+             "This is useful if you're using your own gettext function."
     )
     parser.add_argument(
         '-R',
