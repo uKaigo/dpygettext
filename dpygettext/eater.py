@@ -75,7 +75,6 @@ class TokenEater:
             return
 
         if ttype == tokenize.COMMENT:
-            print(tstring, self.__comment, lineno)
             if self.__comment and lineno == self.__comment[1] + 1:
                 self.__comment[0] += tstring[1:]
                 self.__comment[1] = lineno
