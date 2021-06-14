@@ -45,9 +45,15 @@ class TokenEater:
             # Module docstring?
             if self.__fresh_module:
                 if ttype == tokenize.STRING and is_literal_string(tstring):
-                    self.__add_entry(safe_eval(tstring), lineno, is_docstring=True)
+                    self.__add_entry(
+                        safe_eval(tstring), lineno, is_docstring=True
+                    )
                     self.__fresh_module = False
-                elif ttype not in (tokenize.ENCODING, tokenize.COMMENT, tokenize.NL):
+                elif ttype not in (
+                    tokenize.ENCODING,
+                    tokenize.COMMENT,
+                    tokenize.NL,
+                ):
                     self.__fresh_module = False
                 return
 
@@ -78,10 +84,13 @@ class TokenEater:
             if not isinstance(maybe_fstring, ast.JoinedStr):
                 return
 
-            for value in filter(lambda node: isinstance(node, ast.FormattedValue),
-                                maybe_fstring.values):
-                for call in filter(lambda node: isinstance(node, ast.Call),
-                                   ast.walk(value)):
+            for value in filter(
+                lambda node: isinstance(node, ast.FormattedValue),
+                maybe_fstring.values,
+            ):
+                for call in filter(
+                    lambda node: isinstance(node, ast.Call), ast.walk(value)
+                ):
                     func = call.func
                     if isinstance(func, ast.Name):
                         func_name = func.id
@@ -93,35 +102,56 @@ class TokenEater:
                     if func_name not in opts.keywords:
                         continue
                     if len(call.args) != 1 and not opts.multiple_args:
-                        print((
-                            '*** %(file)s:%(lineno)s: Seen unexpected amount of'
-                            ' positional arguments in gettext call: %(source_segment)s'
-                        ) % {
-                            'source_segment': ast.get_source_segment(tstring, call) or tstring,
-                            'file': self.__cur_infile,
-                            'lineno': lineno
-                        }, file=sys.stderr)
+                        print(
+                            (
+                                '*** %(file)s:%(lineno)s: Seen unexpected amount of'
+                                ' positional arguments in gettext call: %(source_segment)s'
+                            )
+                            % {
+                                'source_segment': ast.get_source_segment(
+                                    tstring, call
+                                )
+                                or tstring,
+                                'file': self.__cur_infile,
+                                'lineno': lineno,
+                            },
+                            file=sys.stderr,
+                        )
                         continue
                     if call.keywords and not opts.multiple_args:
-                        print((
-                            '*** %(file)s:%(lineno)s: Seen unexpected keyword arguments'
-                            ' in gettext call: %(source_segment)s'
-                        ) % {
-                            'source_segment': ast.get_source_segment(tstring, call) or tstring,
-                            'file': self.__cur_infile,
-                            'lineno': lineno
-                        }, file=sys.stderr)
+                        print(
+                            (
+                                '*** %(file)s:%(lineno)s: Seen unexpected keyword arguments'
+                                ' in gettext call: %(source_segment)s'
+                            )
+                            % {
+                                'source_segment': ast.get_source_segment(
+                                    tstring, call
+                                )
+                                or tstring,
+                                'file': self.__cur_infile,
+                                'lineno': lineno,
+                            },
+                            file=sys.stderr,
+                        )
                         continue
                     arg = call.args[0]
                     if not isinstance(arg, ast.Constant):
-                        print((
-                            '*** %(file)s:%(lineno)s: Seen unexpected argument type'
-                            ' in gettext call: %(source_segment)s'
-                        ) % {
-                            'source_segment': ast.get_source_segment(tstring, call) or tstring,
-                            'file': self.__cur_infile,
-                            'lineno': lineno
-                        }, file=sys.stderr)
+                        print(
+                            (
+                                '*** %(file)s:%(lineno)s: Seen unexpected argument type'
+                                ' in gettext call: %(source_segment)s'
+                            )
+                            % {
+                                'source_segment': ast.get_source_segment(
+                                    tstring, call
+                                )
+                                or tstring,
+                                'file': self.__cur_infile,
+                                'lineno': lineno,
+                            },
+                            file=sys.stderr,
+                        )
                         continue
                     if isinstance(arg.value, str):
                         self.__add_entry(arg.value, lineno)
@@ -161,10 +191,15 @@ class TokenEater:
     def __suite_docstring(self, ttype, tstring, lineno):
         # Ignore any intervening noise
         if ttype == tokenize.STRING and is_literal_string(tstring):
-            self.__add_entry(cleandoc(safe_eval(tstring)), lineno, is_docstring=True)
+            self.__add_entry(
+                cleandoc(safe_eval(tstring)), lineno, is_docstring=True
+            )
             self.__state = self.__waiting
-        elif ttype not in (tokenize.NEWLINE, tokenize.INDENT,
-                           tokenize.COMMENT):
+        elif ttype not in (
+            tokenize.NEWLINE,
+            tokenize.INDENT,
+            tokenize.COMMENT,
+        ):
             # There was no class docstring
             self.__state = self.__waiting
 
@@ -193,17 +228,28 @@ class TokenEater:
         elif ttype == tokenize.STRING and is_literal_string(tstring):
             self.__data.append(safe_eval(tstring))
 
-        elif ttype not in [tokenize.COMMENT, tokenize.INDENT, tokenize.DEDENT,
-                           tokenize.NEWLINE, tokenize.NL]:
+        elif ttype not in [
+            tokenize.COMMENT,
+            tokenize.INDENT,
+            tokenize.DEDENT,
+            tokenize.NEWLINE,
+            tokenize.NL,
+        ]:
             # warn if we see anything else than STRING or whitespace
             print(
                 '*** %(file)s:%(lineno)s: Seen unexpected token "%(token)s"'
-                % {'token': tstring, 'file': self.__cur_infile, 'lineno': self.__lineno},
-                file=sys.stderr
+                % {
+                    'token': tstring,
+                    'file': self.__cur_infile,
+                    'lineno': self.__lineno,
+                },
+                file=sys.stderr,
             )
             self.__state = self.__waiting
 
-    def __add_entry(self, msg, lineno=None, is_docstring=False, is_format=False):
+    def __add_entry(
+        self, msg, lineno=None, is_docstring=False, is_format=False
+    ):
         if lineno is None:
             lineno = self.__lineno
 

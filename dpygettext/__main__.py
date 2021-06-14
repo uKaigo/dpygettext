@@ -19,8 +19,7 @@ COMMENTS_KEYWORDS = ['NOTE', 'TRANSLATORS']  # TODO: Make it customizable.
 
 def _parse_args(args):
     parser = argparse.ArgumentParser(
-        'dpygettext',
-        description='pygettext (mainly) for discord.py projects.'
+        'dpygettext', description='pygettext (mainly) for discord.py projects.'
     )
     parser.add_argument(
         'infiles',
@@ -28,7 +27,7 @@ def _parse_args(args):
         nargs='+',
         type=pathlib.Path,
         help='An input file or directory. When a directory is specified, strings '
-             'will be extracted from all ".py" files. Can be multiple.'
+        'will be extracted from all ".py" files. Can be multiple.',
     )
     parser.add_argument(
         '-o',
@@ -37,7 +36,7 @@ def _parse_args(args):
         default='messages.pot',
         type=pathlib.Path,
         help='The output file name. Defaults to "messages.pot". '
-             'Pass "-" to write to stdout.'
+        'Pass "-" to write to stdout.',
     )
     parser.add_argument(
         '-p',
@@ -46,12 +45,12 @@ def _parse_args(args):
         default='locales',
         type=pathlib.Path,
         help='Output files will be placed in FOLDERNAME dir. Defaults '
-             'to "locales".'
+        'to "locales".',
     )
     parser.add_argument(
         '--omit-empty',
         action='store_true',
-        help='Empty .pot will not be outputed.'
+        help='Empty .pot will not be outputed.',
     )
     parser.add_argument(
         '-k',
@@ -59,31 +58,31 @@ def _parse_args(args):
         action='extend',
         metavar='KEYWORD',
         default=[],
-        help='Add more keyword functions. Can be multiple.'
+        help='Add more keyword functions. Can be multiple.',
     )
     parser.add_argument(
         '-r',
         '--recursive',
         action='store_true',
-        help='Recurse through directories passed as input.'
+        help='Recurse through directories passed as input.',
     )
     parser.add_argument(
         '--no-location',
         action='store_true',
-        help="Don't write location comments."
+        help="Don't write location comments.",
     )
     parser.add_argument(
         '-v',
         '--version',
         action='version',
         version='- dpygettext %s' % version,
-        help='Print package version and exit.'
+        help='Print package version and exit.',
     )
     parser.add_argument(
         '-V',
         '--verbose',
         action='store_true',
-        help='Print the files being processed.'
+        help='Print the files being processed.',
     )
     parser.add_argument(
         '-c',
@@ -91,29 +90,29 @@ def _parse_args(args):
         action='store_true',
         dest='cmd_docstrings',
         help='Extract all cog and command docstrings. Has no effect '
-             'when used with the --docstrings option. A cog is any '
-             'class inheriting a "Cog" named class.'
+        'when used with the --docstrings option. A cog is any '
+        'class inheriting a "Cog" named class.',
     )
     parser.add_argument(
         '-D',
         '--docstrings',
         action='store_true',
-        help='Extract all module, class, function and method docstrings.'
+        help='Extract all module, class, function and method docstrings.',
     )
     parser.add_argument(
         '-m',
         '--multiple-args',
         action='store_true',
         help='Allow multiple arguments. For example '
-             'KEYWORD("translate {name}", name="this"). '
-             "This is useful if you're using your own gettext function."
+        'KEYWORD("translate {name}", name="this"). '
+        "This is useful if you're using your own gettext function.",
     )
     parser.add_argument(
         '-R',
         '--relative-to-filename',
         dest='relative',
         action='store_true',
-        help='Make output file name relative to INFILE name.'
+        help='Make output file name relative to INFILE name.',
     )
     return parser.parse_args(args)
 
@@ -145,9 +144,9 @@ def main(args=None):
                     eater(*_token)
             except tokenize.TokenError as e:
                 print(
-                    "%s: %s, line %d, column %d"
+                    '%s: %s, line %d, column %d'
                     % (e.args[0], path, e.args[1][0], e.args[1][1]),
-                    file=sys.stderr
+                    file=sys.stderr,
                 )
                 return 1
 

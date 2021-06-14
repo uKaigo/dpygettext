@@ -5,6 +5,7 @@
 # 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021
 # Python Software Foundation; All Rights Reserved
 
+
 def is_literal_string(s):
     return s[0] in '\'"' or (s[0] in 'rRuU' and s[1] in '\'"')
 
