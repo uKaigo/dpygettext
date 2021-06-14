@@ -222,7 +222,7 @@ class TokenEater:
             # were no strings inside _(), then just ignore this entry.
             if self.__data:
                 to_add = ''.join(self.__data)
-                self.__add_entry(to_add, is_format=re.search('\{.+\}', to_add))
+                self.__add_entry(to_add, is_brace=re.search('\{.+\}', to_add))
             self.__state = self.__waiting
 
         elif ttype == tokenize.STRING and is_literal_string(tstring):
@@ -248,7 +248,7 @@ class TokenEater:
             self.__state = self.__waiting
 
     def __add_entry(
-        self, msg, lineno=None, is_docstring=False, is_format=False
+        self, msg, lineno=None, is_docstring=False, is_brace=False
     ):
         if lineno is None:
             lineno = self.__lineno
@@ -269,8 +269,8 @@ class TokenEater:
         flags = []
         if is_docstring:
             flags.append('docstring')
-        if is_format:
-            flags.append('python-format')
+        if is_brace:
+            flags.append('python-brace-format')
 
         if entry is None:
             if self.__options.no_location:
