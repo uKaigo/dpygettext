@@ -29,7 +29,7 @@ class TokenEater:
         self.__cur_outfile = None
         self.__enclosure_count = 0
         self.__pot_files = {}
-        self.__comment = ()  # (string, lineno)
+        self.__comment = []  # (string, lineno)
 
     def __call__(self, ttype, tstring, start, end, line):
         self.__state(ttype, tstring, start[0])
@@ -75,9 +75,14 @@ class TokenEater:
             return
 
         if ttype == tokenize.COMMENT:
-            comment = tstring[1:].strip().split(' ')
-            if comment[0].rstrip(':') in opts.c_keywords:
-                self.__comment = (' '.join(comment[1:]), lineno)
+            print(tstring, self.__comment, lineno)
+            if self.__comment and lineno == self.__comment[1] + 1:
+                self.__comment[0] += tstring[1:]
+                self.__comment[1] = lineno
+            else:
+                comment = tstring[1:].strip().split(' ', 1)
+                if comment[0].rstrip(':') in opts.c_keywords:
+                    self.__comment = [comment[1], lineno]
 
         if ttype == tokenize.STRING:
             maybe_fstring = ast.parse(tstring, mode='eval').body
@@ -262,7 +267,7 @@ class TokenEater:
         t_comment = None
         if self.__comment:
             if self.__comment[1] != lineno - 1:
-                self.__comment = ()
+                self.__comment = []
             else:
                 t_comment = self.__comment[0]
 
