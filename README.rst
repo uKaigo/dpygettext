@@ -10,10 +10,13 @@ Installation
 
 Help
 ----
-::
+.. The terminal width should be 79.
 
-    usage: dpygettext [-h] [-o FILENAME] [-p FOLDERNAME] [-k KEYWORD] [-r]
-                      [--no-location] [-v] [-V] [-c] [-D] [-m] [-R]
+::
+    
+    usage: dpygettext [-h] [-o FILENAME] [-p FOLDERNAME] [--omit-empty]
+                      [-k KEYWORD] [-r] [--no-location] [-v] [-V] [-c] [-D] [-m]
+                      [-R]
                       INFILES [INFILES ...]
 
     pygettext (mainly) for discord.py projects.
@@ -26,11 +29,12 @@ Help
     optional arguments:
       -h, --help            show this help message and exit
       -o FILENAME, --output-file FILENAME
-                            The output file name. Defaults to "messages.pot". Pass
-                            "-" to write to stdout.
+                            The output file name. Defaults to "messages.pot".
+                            Pass "-" to write to stdout.
       -p FOLDERNAME, --output-dir FOLDERNAME
                             Output files will be placed in FOLDERNAME dir.
                             Defaults to "locales".
+      --omit-empty          Empty .pot will not be outputed.
       -k KEYWORD, --keywords KEYWORD
                             Add more keyword functions. Can be multiple.
       -r, --recursive       Recurse through directories passed as input.
@@ -45,7 +49,7 @@ Help
                             docstrings.
       -m, --multiple-args   Allow multiple arguments. For example
                             KEYWORD("translate {name}", name="this"). This is
-                            useful if you're using you're own gettext function.
+                            useful if you're using your own gettext function.
       -R, --relative-to-filename
                             Make output file name relative to INFILE name.
 
